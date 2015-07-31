@@ -1,0 +1,26 @@
+{
+  "name": "Poll",
+  "version": "0.1.0",
+  "homepage": "https://github.com/melvincarvalho/poll",
+  "authors": [
+    "Melvin Carvalho <melvincarvalho@gmail.com>"
+  ],
+  "description": "Poll",
+  "license": "MIT",
+  "keywords": "webid, linked data, poll, SoLiD",
+  "private": false,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "lumx": "~0.3.39",
+    "angular-ui": "~0.4.0",
+    "angular-audio": "~1.7.0",
+    "dexie": "~1.1.0"
+  }
+}
