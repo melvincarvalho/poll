@@ -90,9 +90,12 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
   };
 
   $scope.initPoll = function() {
-    if (!$scope.poll) {
-      $scope.poll = defaultPoll;
+    var pollURI = defaultPoll;
+    if ($location.search().pollURI) {
+      pollURI = $location.search().pollURI;
     }
+    $scope.poll = pollURI;
+
     $scope.invalidate($scope.poll);
   };
 
