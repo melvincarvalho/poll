@@ -24,6 +24,8 @@ var PROXY = "https://rww.io/proxy.php?uri={uri}";
 var TIMEOUT = 5000;
 var DEBUG = true;
 
+var defaultPoll = 'https://public.databox.me/Public/.poll/poll/test/this#this';
+
 var scope = {};
 var gg;
 
@@ -63,8 +65,12 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     $scope.my = {};
     $scope.friends = [];
     $scope.keys = [];
+
+    $scope.votes= { yes : 0, no : 0};
+
     $scope.initStore();
     $scope.initUI();
+    $scope.initPoll();
 
     // start browser cache DB
   	db = new Dexie("chrome:theSession");
@@ -79,6 +85,12 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
         poll: false,
     };
 
+  };
+
+  $scope.initPoll = function() {
+    if (!$scope.poll) {
+      $scope.poll = defaultPoll;
+    }
   };
 
   $scope.initUI = function() {
@@ -109,9 +121,26 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     $scope.renderMain();
     $scope.renderProfile();
     $scope.renderFriends();
+    $scope.renderPoll();
   };
 
   $scope.renderMain = function () {
+  };
+
+  $scope.renderPoll = function () {
+    var title = g.any($rdf.sym($scope.poll), URN('title'));
+    if (title) {
+      $scope.polltitle = title.value;
+    } else {
+      $scope.polltitle = "Loading...";
+    }
+    var comment = g.any($rdf.sym($scope.poll), URN('comment'));
+    if (comment) {
+      $scope.pollcomment = comment.value;
+    } else {
+      $scope.pollcomment = '...';
+    }
+
   };
 
   $scope.renderProfile = function() {
@@ -245,6 +274,9 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
       addToQueue($scope.queue, seeAlso[i].object.value);
     }
 
+    addToQueue($scope.queue, $scope.poll);
+
+
   }
 
 
@@ -367,6 +399,7 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 
   function addToQueue(array, el) {
     if (!array) return;
+    if (!el) return;
     if (array.indexOf(el) === -1) {
       array.push(el);
     }
@@ -496,6 +529,34 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 
 
   }
+
+  // EVENT functions
+  //
+  //
+  $scope.yes = function() {
+    console.log('yes');
+    LxNotificationService.success('Yes vote registered');
+    if (!$scope.vote) {
+      $scope.votes.yes++;
+    } else if ($scope.vote === 'no') {
+      $scope.votes.yes++;
+      $scope.votes.no--;
+    }
+    $scope.vote = 'yes';
+  };
+
+  $scope.no = function() {
+    console.log('yes');
+    LxNotificationService.success('No vote registered');
+    if (!$scope.vote) {
+      $scope.votes.no++;
+    } else if ($scope.vote === 'yes') {
+      $scope.votes.no++;
+      $scope.votes.yes--;
+    }
+    $scope.vote = 'no';
+  };
+
 
 
   $scope.initApp();

@@ -102,10 +102,12 @@
 
         <div class="name" ng-hide="!show.poll">
           <br>
-          <h2>Vote: Is emacs better than vi?</h2>
+          <h2><a terget="_blank" href="{{poll}}">{{polltitle}}</a></h2>
           <br>
-          4<span class="icon icon--xl icon--flat mdi mdi-thumb-up"></span>
-          3<span class="icon icon--xl icon--flat mdi mdi-thumb-down"></span>
+          <div>{{pollcomment}}</div>
+          <br>
+          {{votes.yes}}<span ng-click="yes()" class="icon icon--xl icon--flat mdi mdi-thumb-up"></span>
+          {{votes.no}}<span ng-click="no()" class="icon icon--xl icon--flat mdi mdi-thumb-down"></span>
 
         </div>
 
