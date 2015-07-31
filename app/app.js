@@ -417,31 +417,26 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
     });
   };
 
-  $scope.save = function() {
-    var position = $scope.position;
-    if (!position) {
-      LxNotificationService.error('position is empty');
-      return;
-    }
-    console.log(position);
+  $scope.save = function(vote) {
+    var opp = 'yes';
+    if (vote === 'yes') opp = 'no';
 
     $http({
-      method: 'PUT',
-      url: $scope.storageURI,
+      method: 'PATCH',
+      url: $scope.poll,
       withCredentials: true,
       headers: {
-        "Content-Type": "text/turtle"
+        "Content-Type": "application/sparql-update"
       },
-      data: '<#this> '+ URN('fen') +' """' + position + '""" .',
+      data:  '  DELETE DATA { <#this> <urn:'+ opp +'> <'+$scope.user+'> . } ; \n  INSERT DATA { <#this> <urn:'+ vote +'> <'+$scope.user+'> . }  ',
     }).
     success(function(data, status, headers) {
-      LxNotificationService.success('Position saved');
-      $location.search('storageURI', $scope.storageURI);
-      $scope.renderBoard(position);
+      LxNotificationService.success(vote + ' vote saved');
     }).
     error(function(data, status, headers) {
-      LxNotificationService.error('could not save position');
+      LxNotificationService.error('could not save vote');
     });
+
 
   };
 
@@ -543,10 +538,11 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
       $scope.votes.no--;
     }
     $scope.vote = 'yes';
+    $scope.save($scope.vote);
   };
 
   $scope.no = function() {
-    console.log('yes');
+    console.log('no');
     LxNotificationService.success('No vote registered');
     if (!$scope.vote) {
       $scope.votes.no++;
@@ -555,6 +551,7 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
       $scope.votes.yes--;
     }
     $scope.vote = 'no';
+    $scope.save($scope.vote);
   };
 
 
