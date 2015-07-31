@@ -11,7 +11,7 @@ Quick Start for contributors
 ----------------------------
 
 ```
-$ git clone git://github.com/melvincarvalho/explorer
+$ git clone git://github.com/melvincarvalho/poll
 $ cd contacts
 $ sudo npm -g install bower
 $ bower install
