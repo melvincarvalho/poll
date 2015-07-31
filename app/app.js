@@ -68,9 +68,6 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
 
     $scope.votes= { yes : 0, no : 0};
 
-    $scope.initStore();
-    $scope.initUI();
-    $scope.initPoll();
 
     // start browser cache DB
   	db = new Dexie("chrome:theSession");
@@ -85,12 +82,18 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
         poll: false,
     };
 
+    $scope.initStore();
+    $scope.initUI();
+    $scope.initPoll();
+
+
   };
 
   $scope.initPoll = function() {
     if (!$scope.poll) {
       $scope.poll = defaultPoll;
     }
+    $scope.invalidate($scope.poll);
   };
 
   $scope.initUI = function() {
@@ -139,6 +142,19 @@ App.controller('Main', function($scope, $http, $location, $timeout, $sce, ngAudi
       $scope.pollcomment = comment.value;
     } else {
       $scope.pollcomment = '...';
+    }
+
+    var yes = g.statementsMatching($rdf.sym($scope.poll), URN('yes'));
+    $scope.votes.yes = yes.length;
+    for (var i=0; i<yes.length; i++) {
+      if (yes[i].object.value === $scope.user) $scope.vote = 'yes';
+    }
+
+
+    var no = g.statementsMatching($rdf.sym($scope.poll), URN('no'));
+    $scope.votes.no = no.length;
+    for (i=0; i<no.length; i++) {
+      if (no[i].object.value === $scope.user) $scope.vote = 'no';
     }
 
   };
